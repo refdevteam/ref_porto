@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:porto/components/app_image.dart';
 import 'package:porto/components/frosted_card.dart';
 import 'package:porto/core/theme/app_theme.dart';
 import 'package:porto/core/utils/responsive_layout.dart';
@@ -318,7 +319,7 @@ class _PhotoTile extends StatelessWidget {
           children: [
             Hero(
               tag: heroTag,
-              child: Image.asset(
+              child: AppImage(
                 asset,
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.medium,
@@ -377,7 +378,7 @@ class _ZoomDialog extends StatelessWidget {
                 maxScale: 5,
                 child: Hero(
                   tag: heroTag,
-                  child: Image.asset(asset, fit: BoxFit.contain),
+                  child: AppImage(asset, fit: BoxFit.contain),
                 ),
               ),
             ),

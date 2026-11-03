@@ -22,6 +22,18 @@ class ProjectsData {
   final List<String> photos;
 
   final String? logoAsset;
+
+  factory ProjectsData.fromJson(Map<String, dynamic> json) => ProjectsData(
+        projectName: json['project_name'] as String,
+        projectType: json['project_type'] as String,
+        durationWork: json['duration_work'] as String,
+        stack: json['stack'] as String,
+        description: json['description'] as String,
+        photos: (json['photos'] as List<dynamic>? ?? const [])
+            .whereType<String>()
+            .toList(),
+        logoAsset: json['logo_url'] as String?,
+      );
 }
 
 const List<ProjectsData> projects = <ProjectsData>[

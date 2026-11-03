@@ -16,6 +16,14 @@ class ContactData {
   final double latitude;
 
   final double longitude;
+
+  factory ContactData.fromJson(Map<String, dynamic> json) => ContactData(
+        email: json['email'] as String,
+        linkedinUrl: json['linkedin_url'] as String,
+        location: json['location'] as String,
+        latitude: (json['latitude'] as num).toDouble(),
+        longitude: (json['longitude'] as num).toDouble(),
+      );
 }
 
 const ContactData contact = ContactData(

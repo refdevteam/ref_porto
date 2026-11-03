@@ -33,6 +33,18 @@ class StudyData {
 
   /// Aset logo institusi; `null` → memakai placeholder ikon sekolah.
   final String? logoAsset;
+
+  factory StudyData.fromJson(Map<String, dynamic> json) => StudyData(
+        institutionName: json['institution_name'] as String,
+        major: json['major'] as String,
+        duration: json['duration'] as String,
+        gpa: json['gpa'] as String?,
+        description: json['description'] as String,
+        photos: (json['photos'] as List<dynamic>? ?? const [])
+            .whereType<String>()
+            .toList(),
+        logoAsset: json['logo_url'] as String?,
+      );
 }
 
 /// Data contoh — ganti dengan data asli saat sudah siap.

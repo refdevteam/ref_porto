@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:porto/components/app_image.dart';
 import 'package:porto/core/theme/app_theme.dart';
 import 'package:porto/core/utils/responsive_layout.dart';
 
@@ -42,7 +43,7 @@ class FrostedImage extends StatelessWidget {
         height: size,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Image.asset(
+          child: AppImage(
             imageAsset,
             fit: BoxFit.fill,
             scale: 2,

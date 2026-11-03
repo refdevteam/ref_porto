@@ -413,12 +413,16 @@ class _ContactGridState extends State<ContactGrid> {
                 ),
               ],
             ),
-            SimpleAttributionWidget(
-              source: const Text('OpenStreetMap contributors'),
-              onTap: () => _openExternal(
-                'https://www.openstreetmap.org/copyright',
-                'OpenStreetMap',
-              ),
+            RichAttributionWidget(
+              attributions: [
+                TextSourceAttribution(
+                  'OpenStreetMap contributors',
+                  onTap: () => _openExternal(
+                    'https://www.openstreetmap.org/copyright',
+                    'OpenStreetMap',
+                  ),
+                ),
+              ],
             ),
           ],
         ),

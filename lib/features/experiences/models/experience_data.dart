@@ -25,6 +25,14 @@ class ExperienceData {
 
   /// Aset logo office; `null` → memakai placeholder ikon gedung.
   final String? logoAsset;
+
+  factory ExperienceData.fromJson(Map<String, dynamic> json) => ExperienceData(
+        position: json['position'] as String,
+        officeName: json['office_name'] as String,
+        duration: json['duration'] as String,
+        description: json['description'] as String,
+        logoAsset: json['logo_url'] as String?,
+      );
 }
 
 /// Data contoh — ganti dengan data asli saat sudah siap.

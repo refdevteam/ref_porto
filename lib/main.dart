@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:porto/core/data/app_data.dart';
 import 'package:porto/core/routes/app_router.dart';
 
 import 'package:porto/core/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 const String _themeModeKey = 'themeMode';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: AppData.supabaseUrl,
+    publishableKey: AppData.supabaseAnonKey,
+  );
+
+  final GoRouteInformationProvider routerInfo =
+      appRouter.routeInformationProvider;
+  AppData.instance.trackVisit(routerInfo.value.uri.path);
+  routerInfo.addListener(() {
+    AppData.instance.trackVisit(routerInfo.value.uri.path);
+  });
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? saved = prefs.getString(_themeModeKey);
@@ -21,6 +36,7 @@ Future<void> main() async {
   });
 
   runApp(const MyApp());
+  AppData.instance.load();
 }
 
 class MyApp extends StatelessWidget {
