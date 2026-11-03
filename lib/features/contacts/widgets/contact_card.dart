@@ -90,8 +90,9 @@ class ContactCard extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: theme.textTheme.titleLarge!
-                              .copyWith(fontSize: headlineSize),
+                          style: theme.textTheme.titleLarge!.copyWith(
+                            fontSize: headlineSize,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(subtitle, style: theme.textTheme.bodyMedium),
@@ -209,7 +210,7 @@ class _ActionBar extends StatelessWidget {
         bottom: 9,
       ),
       child: onToggle == null
-          ? primary
+          ? SizedBox(height: 30, child: primary)
           : Row(
               children: [
                 Expanded(child: primary),
@@ -254,8 +255,9 @@ class ContactGrid extends StatefulWidget {
 class _ContactGridState extends State<ContactGrid> {
   bool _emailExpanded = false;
   bool _locationExpanded = false;
-  final TextEditingController _subject =
-      TextEditingController(text: _workSubject);
+  final TextEditingController _subject = TextEditingController(
+    text: _workSubject,
+  );
   final TextEditingController _body = TextEditingController(text: _workBody);
 
   @override
@@ -293,14 +295,13 @@ class _ContactGridState extends State<ContactGrid> {
         title: 'Location',
         subtitle: data.location,
         icon: Icons.location_on_outlined,
-        actionLabel:
-            _locationExpanded ? 'Open in Google Maps' : 'View on map',
+        actionLabel: _locationExpanded ? 'Open in Google Maps' : 'View on map',
         onAction: _locationExpanded
             ? () => _openExternal(
-                  'https://www.google.com/maps/search/?api=1'
-                  '&query=${Uri.encodeComponent(data.location)}',
-                  'Google Maps',
-                )
+                'https://www.google.com/maps/search/?api=1'
+                    '&query=${Uri.encodeComponent(data.location)}',
+                'Google Maps',
+              )
             : () => setState(() => _locationExpanded = true),
         expanded: _locationExpanded,
         onToggle: () => setState(() => _locationExpanded = !_locationExpanded),
@@ -314,9 +315,7 @@ class _ContactGridState extends State<ContactGrid> {
         _ContactRow(
           cards: <ContactCard?>[
             for (int offset = 0; offset < widget.columns; offset++)
-              start + offset < cards.length
-                  ? cards[start + offset]
-                  : null,
+              start + offset < cards.length ? cards[start + offset] : null,
           ],
           spacing: widget.spacing,
         ),
@@ -327,28 +326,50 @@ class _ContactGridState extends State<ContactGrid> {
   }
 
   Widget _emailForm() {
+    final TextStyle titleStyle = Theme.of(context)
+        .textTheme
+        .labelMedium!
+        .copyWith(fontWeight: FontWeight.w600);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 10.0,
       children: [
+        Text('Subject', style: titleStyle),
         TextField(
           controller: _subject,
           style: Theme.of(context).textTheme.bodyMedium,
-          decoration: _fieldDecoration('Subject'),
+          decoration: _fieldDecoration(),
         ),
-        const SizedBox(height: 10),
+        Text('Message', style: titleStyle),
         TextField(
           controller: _body,
           minLines: 5,
           maxLines: 8,
           keyboardType: TextInputType.multiline,
           style: Theme.of(context).textTheme.bodyMedium,
-          decoration: _fieldDecoration('Message'),
+          decoration: _fieldDecoration(),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            onPressed: _resetEmailForm,
+            icon: const Icon(Icons.refresh_rounded, size: 16),
+            label: const Text('Reset'),
+          ),
         ),
       ],
     );
   }
 
-  InputDecoration _fieldDecoration(String label) {
+  void _resetEmailForm() {
+    _subject.text = _workSubject;
+    _body.text = _workBody;
+    _subject.selection = TextSelection.collapsed(offset: _subject.text.length);
+    _body.selection = TextSelection.collapsed(offset: _body.text.length);
+  }
+
+  InputDecoration _fieldDecoration() {
     final ThemeData theme = Theme.of(context);
     final FrostedTheme frost = FrostedTheme.of(context);
     final OutlineInputBorder border = OutlineInputBorder(
@@ -357,8 +378,6 @@ class _ContactGridState extends State<ContactGrid> {
     );
 
     return InputDecoration(
-      labelText: label,
-      labelStyle: theme.textTheme.labelMedium,
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       filled: true,
@@ -472,9 +491,8 @@ class _ContactGridState extends State<ContactGrid> {
     }
     if (opened || !mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Could not open LinkedIn')),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Could not open LinkedIn')));
   }
 
   Future<void> _openExternal(String url, String label) async {
@@ -489,9 +507,8 @@ class _ContactGridState extends State<ContactGrid> {
     }
     if (opened || !mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Could not open $label')),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Could not open $label')));
   }
 }
 
