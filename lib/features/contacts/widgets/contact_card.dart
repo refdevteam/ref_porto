@@ -36,6 +36,9 @@ class ContactCard extends StatelessWidget {
     this.expanded = false,
     this.onToggle,
     this.expandedContent,
+    this.secondaryLabel,
+    this.onSecondary,
+    this.highlightAction = false,
   }) : assert(icon != null || glyph != null);
 
   final String title;
@@ -58,6 +61,15 @@ class ContactCard extends StatelessWidget {
   final VoidCallback? onToggle;
 
   final Widget? expandedContent;
+
+  /// Aksi sekunder di kiri aksi utama pada action bar (mis. Reset).
+  /// `null` → tanpa aksi sekunder.
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
+
+  /// Saat `true`, aksi utama tampil sebagai pill filled — penanda bahwa
+  /// aksi membuka halaman/ aplikasi di luar porto.
+  final bool highlightAction;
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +165,9 @@ class ContactCard extends StatelessWidget {
             expanded: expanded,
             onPrimary: onAction,
             onToggle: onToggle,
+            secondaryLabel: secondaryLabel,
+            onSecondary: onSecondary,
+            highlight: highlightAction,
           ),
         ],
       ),
@@ -160,14 +175,18 @@ class ContactCard extends StatelessWidget {
   }
 }
 
-/// Bar aksi dua zona: kiri = aksi utama (label + panah), kanan = chevron
-/// toggle untuk kartu expandable. Kartu tanpa expand tampil tanpa chevron.
+/// Bar aksi: chevron toggle di paling kiri, aksi sekunder (mis. Reset)
+/// menyusulnya, lalu aksi utama di paling kanan — tampil sebagai pill
+/// filled bila [highlight], penanda aksi membuka halaman di luar porto.
 class _ActionBar extends StatelessWidget {
   const _ActionBar({
     required this.label,
     required this.expanded,
     required this.onPrimary,
     this.onToggle,
+    this.secondaryLabel,
+    this.onSecondary,
+    this.highlight = false,
   });
 
   final String label;
@@ -175,58 +194,108 @@ class _ActionBar extends StatelessWidget {
   final VoidCallback onPrimary;
   final VoidCallback? onToggle;
 
+  /// Aksi sekunder di kiri aksi utama (mis. Reset).
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
+
+  /// Saat `true`, aksi utama tampil sebagai pill filled (kontras tinggi).
+  final bool highlight;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final FrostedTheme frost = FrostedTheme.of(context);
+    final ColorScheme colors = theme.colorScheme;
+    final BorderRadius pillRadius = BorderRadius.circular(999);
 
-    final Widget primary = InkWell(
-      onTap: onPrimary,
-      borderRadius: BorderRadius.circular(12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.labelMedium,
+    final Widget primary = Material(
+      color: highlight ? colors.primary : Colors.transparent,
+      borderRadius: pillRadius,
+      child: InkWell(
+        onTap: onPrimary,
+        borderRadius: pillRadius,
+        child: SizedBox(
+          height: 30,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: highlight ? 12 : 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: highlight
+                        ? theme.textTheme.labelMedium!.copyWith(
+                            color: colors.onPrimary,
+                            fontWeight: FontWeight.w600,
+                          )
+                        : theme.textTheme.labelMedium,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_outward,
+                  size: 16,
+                  color: highlight ? colors.onPrimary : null,
+                ),
+              ],
             ),
           ),
-          const Icon(Icons.arrow_outward, size: 16),
-        ],
+        ),
       ),
     );
+
+    final Widget? secondary = secondaryLabel == null
+        ? null
+        : TextButton.icon(
+            onPressed: onSecondary,
+            icon: const Icon(Icons.refresh_rounded, size: 16),
+            label: Text(secondaryLabel!),
+            // Samakan tinggi & rapatkan dengan bar aksi utama.
+            style: TextButton.styleFrom(
+              minimumSize: const Size(0, 30),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          );
+
+    final Widget? chevron = onToggle == null
+        ? null
+        : InkWell(
+            onTap: onToggle,
+            borderRadius: BorderRadius.circular(999),
+            child: AnimatedRotation(
+              turns: expanded ? 0.5 : 0,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              child: const Padding(
+                padding: EdgeInsets.all(6),
+                child: Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+              ),
+            ),
+          );
 
     return FrostedGlass(
       radius: 12,
       fill: frost.fillStrong,
       shadow: false,
       padding: EdgeInsets.only(
-        left: 14,
-        right: onToggle == null ? 14 : 4,
+        // Pill membawa padding internal sendiri; selain itu rapatkan
+        // ke tepi supaya margin kiri-kanan seimbang.
+        left: onToggle == null && !highlight ? 14 : 4,
+        right: highlight ? 4 : 14,
         top: 9,
         bottom: 9,
       ),
-      child: onToggle == null
-          ? SizedBox(height: 30, child: primary)
+      child: onToggle == null && secondary == null
+          ? primary
           : Row(
+              spacing: 4,
               children: [
+                ?chevron,
+                ?secondary,
                 Expanded(child: primary),
-                InkWell(
-                  onTap: onToggle,
-                  borderRadius: BorderRadius.circular(999),
-                  child: AnimatedRotation(
-                    turns: expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    child: const Padding(
-                      padding: EdgeInsets.all(6),
-                      child: Icon(Icons.keyboard_arrow_down_rounded, size: 18),
-                    ),
-                  ),
-                ),
               ],
             ),
     );
@@ -283,6 +352,11 @@ class _ContactGridState extends State<ContactGrid> {
         expanded: _emailExpanded,
         onToggle: () => setState(() => _emailExpanded = !_emailExpanded),
         expandedContent: _emailForm(),
+        // Reset hanya relevan saat form tampil.
+        secondaryLabel: _emailExpanded ? 'Reset' : null,
+        onSecondary: _emailExpanded ? _resetEmailForm : null,
+        // "Write email" membuka form inline; "Send email" keluar (mailto).
+        highlightAction: _emailExpanded,
       ),
       ContactCard(
         title: 'LinkedIn',
@@ -290,6 +364,8 @@ class _ContactGridState extends State<ContactGrid> {
         glyph: 'in',
         actionLabel: 'Open profile',
         onAction: () => _openLinkedIn(data.linkedinUrl),
+        // Selalu membuka tab browser baru — di luar porto.
+        highlightAction: true,
       ),
       ContactCard(
         title: 'Location',
@@ -306,6 +382,8 @@ class _ContactGridState extends State<ContactGrid> {
         expanded: _locationExpanded,
         onToggle: () => setState(() => _locationExpanded = !_locationExpanded),
         expandedContent: _locationMap(data),
+        // "View on map" membuka peta inline; "Open in Google Maps" keluar.
+        highlightAction: _locationExpanded,
       ),
     ];
 
@@ -347,14 +425,6 @@ class _ContactGridState extends State<ContactGrid> {
           keyboardType: TextInputType.multiline,
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: _fieldDecoration(),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton.icon(
-            onPressed: _resetEmailForm,
-            icon: const Icon(Icons.refresh_rounded, size: 16),
-            label: const Text('Reset'),
-          ),
         ),
       ],
     );
