@@ -14,28 +14,35 @@ class HomeMobileScreen extends StatefulWidget {
 class _HomeMobileScreenState extends State<HomeMobileScreen> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: SafeArea(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 800),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 24.0,
-            ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 400),
-              child: Center(
-                child: ResumeCard(
-                  title: 'Mohammad Rifki Reza Fahlevi',
-                  description: widget.description,
-                  mobileTrailingWidget: ProfileAvatar(),
+    // Overlay navbar melayang: panel 48px + jarak bawah 16px.
+    final double navOverlay = 64 + MediaQuery.of(context).viewPadding.bottom;
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 24.0,
+                bottom: 24.0 + navOverlay,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 400),
+                child: Center(
+                  child: ResumeCard(
+                    title: 'Mohammad Rifki Reza Fahlevi',
+                    description: widget.description,
+                    mobileTrailingWidget: ProfileAvatar(),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
