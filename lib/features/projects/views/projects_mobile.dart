@@ -21,7 +21,7 @@ class _ProjectsMobileScreenState extends State<ProjectsMobileScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         spacing: 24,
         children: [
-          Text('Projects', style: Theme.of(context).textTheme.displayLarge),
+          Text('Projects', style: Theme.of(context).textTheme.headlineMedium),
           ProjectGrid(items: widget.items, columns: 1, spacing: 16),
         ],
       ),

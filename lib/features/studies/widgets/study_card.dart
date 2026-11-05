@@ -46,7 +46,7 @@ class _StudyCardState extends State<StudyCard> {
       children: [
         _InfoPill(icon: Icons.schedule_rounded, label: data.duration),
         if (data.gpa != null)
-          _InfoPill(icon: Icons.grade_rounded, label: 'IPK ${data.gpa}'),
+          _InfoPill(icon: Icons.grade_rounded, label: '${data.gpa}'),
       ],
     );
 
@@ -77,23 +77,17 @@ class _StudyCardState extends State<StudyCard> {
                         ),
                         const SizedBox(height: 4),
                         Text(data.major, style: theme.textTheme.bodyMedium),
-                        if (!compact) ...[
-                          const SizedBox(height: 14),
-                          pills,
-                        ],
+                        if (!compact) ...[const SizedBox(height: 14), pills],
                       ],
                     ),
                   ),
                   _StudyLogo(
                     logoAsset: data.logoAsset,
-                    size: compact ? 32 : 80,
+                    size: compact ? 50 : 80,
                   ),
                 ],
               ),
-              if (compact) ...[
-                const SizedBox(height: 10),
-                pills,
-              ],
+              if (compact) ...[const SizedBox(height: 10), pills],
               // Fade dan tinggi kartu ikut mengecil serentak selama transisi.
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),

@@ -86,7 +86,7 @@ class _ProjectCardState extends State<ProjectCard> {
                   ),
                   _ProjectLogo(
                     logoAsset: data.logoAsset,
-                    size: compact ? 32 : 80,
+                    size: compact ? 50 : 80,
                   ),
                 ],
               ),

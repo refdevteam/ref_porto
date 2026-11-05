@@ -68,7 +68,7 @@ class ContactCard extends StatelessWidget {
       WindowClass.medium => 17,
       WindowClass.expanded => 20,
     };
-    final double badgeSize = compact ? 32 : 80;
+    final double badgeSize = compact ? 46 : 80;
     final IconData? badgeIcon = icon;
 
     return FrostedGlass(
@@ -326,9 +326,7 @@ class _ContactGridState extends State<ContactGrid> {
   }
 
   Widget _emailForm() {
-    final TextStyle titleStyle = Theme.of(context)
-        .textTheme
-        .labelMedium!
+    final TextStyle titleStyle = Theme.of(context).textTheme.labelMedium!
         .copyWith(fontWeight: FontWeight.w600);
 
     return Column(

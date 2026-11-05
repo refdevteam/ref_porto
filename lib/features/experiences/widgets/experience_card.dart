@@ -77,7 +77,7 @@ class _ExperienceCardState extends State<ExperienceCard> {
                   ),
                   _OfficeLogo(
                     logoAsset: data.logoAsset,
-                    size: compact ? 32 : 80,
+                    size: compact ? 50 : 80,
                   ),
                 ],
               ),
