@@ -26,7 +26,7 @@ class _ExperiencesMobileScreenState extends State<ExperiencesMobileScreen> {
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: 24),
-          ExperienceGrid(items: widget.items, columns: 2, spacing: 16),
+          ExperienceGrid(items: widget.items, columns: 1, spacing: 16),
         ],
       ),
     );
