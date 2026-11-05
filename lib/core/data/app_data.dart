@@ -49,9 +49,12 @@ class AppData {
     try {
       final SupabaseClient client = Supabase.instance.client;
       final List<Object?> rows = await Future.wait<Object?>([
-        client.from('projects').select().order('sort_order'),
-        client.from('experiences').select().order('sort_order'),
-        client.from('studies').select().order('sort_order'),
+        client.from('projects').select().order('sort_order', ascending: true),
+        client
+            .from('experiences')
+            .select()
+            .order('sort_order', ascending: true),
+        client.from('studies').select().order('sort_order', ascending: true),
         client.from('contact').select().limit(1),
         client.from('profile').select().limit(1),
       ]).timeout(const Duration(seconds: 5));
