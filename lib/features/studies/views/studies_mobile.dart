@@ -22,7 +22,7 @@ class _StudiesMobileScreenState extends State<StudiesMobileScreen> {
         spacing: 24,
         children: [
           Text('Studies', style: Theme.of(context).textTheme.headlineMedium),
-          StudyGrid(items: widget.items, columns: 2, spacing: 16),
+          StudyGrid(items: widget.items, columns: 1, spacing: 16),
         ],
       ),
     );

@@ -22,7 +22,7 @@ class _ProjectsMobileScreenState extends State<ProjectsMobileScreen> {
         spacing: 24,
         children: [
           Text('Projects', style: Theme.of(context).textTheme.displayLarge),
-          ProjectGrid(items: widget.items, columns: 2, spacing: 16),
+          ProjectGrid(items: widget.items, columns: 1, spacing: 16),
         ],
       ),
     );
